@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>OpenAI Image Generation</title>
+</head>
+
+<body>
+    <!-- Create a form to get user input -->
+<form style="font-size: 20px;">
+    <label for="message" style="font-weight: bold; font-size: 18px;">어떤 이미지를 만들어 드릴까요?:</label>
+    <input type="text" id="message" name="message" style="padding: 10px; border: 2px solid #ccc;"><br><br>
+    <input type="button" value="이미지 생성" onclick="generateImage()"
+        style="background-color: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">
+</form>
+
+    <!-- Create a script to handle image generation -->
+    <script>
+        function generateImage() {
+            // Get user input from the form
+            var message = document.getElementById("message").value;
+
+            // Send a request to OpenAI image generation API
+            // and receive the image as a response
+            // using fetch() method
+            fetch("https://api.openai.com/v1/images/generations", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer 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"
+                },
+                body: JSON.stringify({
+                    model: "image-alpha-001",
+                    prompt: message,
+                    num_images: 1,
+                    size: "512x512",
+                    response_format: "url"
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // Display the generated image on the page
+                    var img = document.createElement("img");
+                    img.src = data.data[0].url;
+                    document.body.appendChild(img);
+                })
+                .catch(error => console.log(error));
+        }
+    </script>
+</body>
+
+</html>

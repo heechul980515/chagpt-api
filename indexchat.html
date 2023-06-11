@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>GPT Chatbot</title>
+    <!-- Add meta tags for responsive design -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Add styles for the chat window -->
+    <style>
+        .chat-window {
+            height: 400px;
+            width: 80%;
+            margin: auto;
+            border: 1px solid black;
+            overflow-y: scroll;
+            padding: 10px;
+        }
+
+        .chat-window p {
+            margin: 5px;
+        }
+
+        .chat-input {
+            width: 80%;
+            margin: auto;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+        }
+
+        .chat-input input {
+            flex: 1;
+            margin-right: 10px;
+            padding: 5px;
+        }
+
+        .chat-input button {
+            padding: 5px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>GPT Chatbot</h1>
+    <!-- Create a form for user input -->
+    <form>
+        <label for="role">Choose the role of the conversation partner:</label>
+        <input type="text" id="role" name="role">
+        <button type="button" onclick="startChat()">Start Chat</button>
+    </form>
+    <!-- Create a div for the chat window -->
+    <div class="chat-window" id="chat-window"></div>
+    <!-- Create a div for the chat input -->
+    <div class="chat-input">
+        <input type="text" id="chat-input" name="chat-input">
+        <button type="button" onclick="sendMessage()">Send</button>
+    </div>
+    <!-- Add script for the chat functionality -->
+    <script>
+        // Define variables for the chat window and input
+        var chatWindow = document.getElementById("chat-window");
+        var chatInput = document.getElementById("chat-input");
+        var message = chatInput.value
+        // Define a variable for the GPT role
+        var gptRole;
+        // Function to start the chat
+        function startChat() {
+            // Get the value of the role input
+            gptRole = document.getElementById("role").value;
+            // Clear the role input
+            document.getElementById("role").value = "";
+            // Add a welcome message to the chat window
+            chatWindow.innerHTML += "<p>Welcome to the chat! You are now chatting with " + gptRole + ".</p>";
+        }
+        // Function to send a message
+        function sendMessage() {
+            // Get the value of the chat input
+            var message = chatInput.value;
+            // Clear the chat input
+            chatInput.value = "";
+            // Add the user's message to the chat window
+            chatWindow.innerHTML += "<p>You: " + message + "</p>";
+            // Send the message to GPT and get the response
+            var response = getResponse(message);
+            // Add GPT's response to the chat window
+            chatWindow.innerHTML += "<p>" + gptRole + ": " + response + "</p>";
+        }
+        // Function to send a message and get the response from GPT
+        function getResponse(message) {
+            // Create a new XMLHttpRequest object
+            var xhr = new XMLHttpRequest();
+            // Define the API endpoint URL
+            var url = "https://api.openai.com/v1/chat/completions";    //API 엔드포인트
+            // Set the request headers
+            xhr.open("POST", url, true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.setRequestHeader("Authorization", "Bearer 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");  // Replace YOUR_API_KEY with your OpenAI API key
+    
+            // 요청 적재량 정의
+            var data = JSON.stringify({
+                prompt: message,
+                max_tokens: 50,
+                temperature: 1.0
+            });
+    
+            // Send the request
+            xhr.send(data);
+            
+            // Handle the response
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    var choices = response.choices;
+                    if (choices && choices.length > 0) {
+                        var reply = choices[0].text.trim();
+                        // Add the GPT's response to the chat window
+                        chatWindow.innerHTML += "<p>" + gptRole + ": " + reply + "</p>";
+                    }
+                }
+            }
+        }
+
+    </script>
+</body>
+</html>
