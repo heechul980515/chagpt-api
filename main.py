@@ -53,23 +53,6 @@ def chatbot():
     return response["choices"][0]["message"]["content"]
 
 
-@app.route("/image", methods=["post"])
-def image():
-    data = request.json
-    text = data["text"]
-    image = data["image"]
-
-    prompt = f"{text}"
-    response = openai.Image.create(
-        prompt = f"{text}",
-        n=1,
-        size="256x256"
-    )
-    image_url = response['data'][0]['url']
-    print(response["data"])
-    print(image_url)
-    return response['data'][0]['url']
-
 
 @app.route("/webtranslater")
 def webtranslater():
