@@ -39,7 +39,7 @@
             })
                 .then(response => response.json())
                 .then(data => {
-                    // Display the generated image on the page
+                    // 응답 받은 이미지 화면에 출력
                     var img = document.createElement("img");
                     img.src = data.data[0].url;
                     document.body.appendChild(img);
